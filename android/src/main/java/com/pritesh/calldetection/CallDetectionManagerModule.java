@@ -115,21 +115,19 @@ public class CallDetectionManagerModule
 
         switch (state) {
             //Hangup
-            case TelephonyManager.CALL_STATE_IDLE:
-                if(wasAppInRinging == true ) {
-                    if(wasAppInOffHook == true) {
+            case TelephonyManager.CALL_STATE_IDLE://空闲状态
+                if( wasAppInOffHook == true || wasAppInRinging == true) {
                         jsModule.callStateUpdated("Disconnected", null);
-
                     } else {
                         jsModule.callStateUpdated("Missed", null);
                     }
-                }
+
                 wasAppInRinging = false;
                 wasAppInOffHook = false;
                 // Device call state: No activity.
                 break;
             //Outgoing
-            case TelephonyManager.CALL_STATE_OFFHOOK:
+            case TelephonyManager.CALL_STATE_OFFHOOK: //通话状态
                 //Device call state: Off-hook. At least one call exists that is dialing, active, or on hold, and no calls are ringing or waiting.
                 wasAppInOffHook = true;
                 jsModule.callStateUpdated("Offhook", null);
