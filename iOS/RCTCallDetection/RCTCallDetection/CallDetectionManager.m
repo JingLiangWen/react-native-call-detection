@@ -65,7 +65,7 @@ RCT_EXPORT_METHOD(startListener) {
 
 RCT_EXPORT_METHOD(stopListener) {
     // Setup call tracking
-    self.callCenter = nil;co
+    self.callCenter = nil;
 }
 
 - (void)handleCall:(CTCall *)call {
