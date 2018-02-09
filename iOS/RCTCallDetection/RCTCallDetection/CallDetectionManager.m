@@ -19,6 +19,15 @@ typedef void (^CallBack)();
 
 @implementation CallDetectionManager
 
++ (id)allocWithZone:(NSZone *)zone {
+    static CallDetectionManager *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [super allocWithZone:zone];
+    });
+    return sharedInstance;
+}
+
 - (NSDictionary *)constantsToExport
 {
     return @{
@@ -56,7 +65,7 @@ RCT_EXPORT_METHOD(startListener) {
 
 RCT_EXPORT_METHOD(stopListener) {
     // Setup call tracking
-    self.callCenter = nil;
+    self.callCenter = nil;co
 }
 
 - (void)handleCall:(CTCall *)call {
@@ -68,10 +77,10 @@ RCT_EXPORT_METHOD(stopListener) {
                                    CTCallStateIncoming     : @"Incoming"
                                    };
     
-    _callCenter = [[CTCallCenter alloc] init];
-    
-    [_callCenter setCallEventHandler:^(CTCall *call) {
-        [self sendEventWithName:@"PhoneCallStateUpdate"
+    self.callCenter = [[CTCallCenter alloc] init];
+    __typeof(self) weakSelf = self;
+    [self.callCenter setCallEventHandler:^(CTCall *call) {
+        [weakSelf sendEventWithName:@"PhoneCallStateUpdate"
                                                      body:[eventNameMap objectForKey: call.callState]];
     }];
 }
